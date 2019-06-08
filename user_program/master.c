@@ -49,7 +49,7 @@ int main (int argc, char* argv[])
 		perror("failed to get filesize\n");
 		return 1;
 	}
-	printf("File size =%d\n", file_size);
+	/*printf("File size =%d\n", file_size);*/
 
 	if(ioctl(dev_fd, 0x12345677) == -1) //0x12345677 : create socket and accept the connection from the slave
 	{
@@ -57,7 +57,7 @@ int main (int argc, char* argv[])
 		return 1;
 	}
 
-	printf("Before switch\n");
+	/*printf("Before switch\n");*/
 
 	switch(method[0])
 	{
@@ -65,7 +65,7 @@ int main (int argc, char* argv[])
 			do
 			{
 				ret = read(file_fd, buf, sizeof(buf)); // read from the input file
-				printf("Master read size = %d\n", ret);
+				/*printf("Master read size = %d\n", ret);*/
 				write(dev_fd, buf, ret);//write to the the device
 			}while(ret > 0);
 			break;
@@ -84,7 +84,7 @@ int main (int argc, char* argv[])
 				offset += length;
 				ioctl(dev_fd, 0x12345678, length);
 
-				printf("length = %d offset = %d \n", length, offset);
+				/*printf("length = %d offset = %d \n", length, offset);*/
 			}
 			break;
 			///////////////////////////////////////////////////////////////

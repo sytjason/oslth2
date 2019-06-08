@@ -58,7 +58,7 @@ int main (int argc, char* argv[])
 			{
 				ret = read(dev_fd, buf, BUF_SIZE); // read from the the device
 				write(file_fd, buf, ret); //write to the input file
-				printf("ret: %d\n",ret);
+				/*printf("ret: %d\n",ret);*/
 				file_size += ret;
 			}while(ret > 0);
 			break;
@@ -67,11 +67,11 @@ int main (int argc, char* argv[])
 			while (1)
 			{
 				ret = ioctl(dev_fd, 0x12345678);
-				printf("ret = %d\n", ret);
+				/*printf("ret = %d\n", ret);*/
 				if ((int)ret <= 0)
 				{
 					file_size = offset;
-					printf("out %d!",ret);
+					/*printf("out %d\n",ret);*/
 					break;
 				}
 				posix_fallocate(file_fd, offset, ret);
@@ -82,7 +82,7 @@ int main (int argc, char* argv[])
 				memcpy(file_address, kernel_address, ret);
 				/*printf("yaya3");*/
 				offset += ret;
-				printf("file_size = %d offset = %d\n", ret, offset);
+				/*printf("file_size = %d offset = %d\n", ret, offset);*/
 			}
 			break;
 			///////////////////////////////////////////////////////////////	
