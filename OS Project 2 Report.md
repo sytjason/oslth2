@@ -6,8 +6,7 @@
 
 ### fcntl
 
-使用傳統的方式讓資料從檔案讀取出來後，經由網路傳輸模組將資料送至
-slave。
+使用傳統的方式讓資料從檔案讀取出來後，經由網路傳輸模組將資料送至slave。
 
 ### mmap
 
@@ -15,31 +14,92 @@ slave。
 
  
 
-**初始化**
+- **初始化**
 
-**master**
+  - **master**
 
-開啟 master device 及指定的檔案 (filex_in)
+    開啟 mast er device 及指定的檔案 (filex_in)
 
-dev_fd = open("/dev/master_device", O_RDWR)
+    dev_fd = open("/dev/master_device", O_RDWR)
 
-ile_fd = open (file_name, O_RDWR)
+    file_fd = open (file_name, O_RDWR)
 
+  - **slave**
+
+    dev_fd = open("/dev/slave_device", O_RDWR)
+
+    file_fd = open (file_name, O_RDWR | O_CREAT | O_TRUNC)
+
+- **fcntl**
+
+  - **master**
+
+    將 file 寫入 (write) 到 master device
   
+  - **slave**
 
-**slave**
+    將 slave device 的資料讀取 (read) 下來並且寫入到 file_out 檔案當中
 
-dev_fd = open("/dev/slave_device", O_RDWR)
+- **mmap**
 
-file_fd = open (file_name, O_RDWR | O_CREAT | O_TRUNC)
+  - **master**
+    
+    將 file 當中的資料 mmap 到 file_address, master device 的資料 mmap 到 kernel_address, 將 file_address 複製 (memcpy) 到kernel_address
+
+  - **slave**
+
+    用同樣的方式將 slave device 當中的資料複製到 file_out 檔案當中
 
 
-  
+## Kernel program
+
+- **init**
+
+  - **master**
+
+    
+    
 
 ## Result
 
- 使用傳統方式對檔案進行操作時，若需要對檔案內容進行頻繁的讀寫動作，往往會需要花費大量的 I/O 讀寫時間，但是透過 mmap 的方式，以 PAGE_SIZE 作為對映的單位，則能有效提高讀寫效率，進而降低傳輸所需要的時間。
+- master command
 
+```bash
+sudo ./master [input data] <fcntl | mmap>
+```
+
+- slave command
+
+```bash
+sudo ./slave [output data] <fcntl | mmap>
+```
+
+**output**
+
+> input = ../data/file_1      
+using fcntl  
+
+
+- master output
+
+```bash
+File size =32
+Before switch
+Master read size = 32
+Master read size = 0
+Transmission time: 6949.230000 ms, File size: 4 bytes
+
+```
+
+- slave output
+
+```bash
+ioctl success
+ret: 32
+ret: 0
+Transmission time: 0.163600 ms, File size: 4 bytes
+
+```
 
  
 
@@ -47,7 +107,7 @@ file_fd = open (file_name, O_RDWR | O_CREAT | O_TRUNC)
 
 ### file1
 
-**fcntlTransmission time: 5.836000 ms, File size: 1502860 bytes**
+**fcntl**
 
 | master                                              | slave                                              |
 | --------------------------------------------------- | -------------------------------------------------- |
@@ -114,6 +174,10 @@ file_fd = open (file_name, O_RDWR | O_CREAT | O_TRUNC)
 | master                                                    | slave                                                    |
 | --------------------------------------------------------- | -------------------------------------------------------- |
 | Transmission time: 34.412400 ms, File size: 1502860 bytes | Transmission time: 3.771600 ms, File size: 1502860 bytes |
+
+
+
+使用傳統方式對檔案進行操作時，若需要對檔案內容進行頻繁的讀寫動作，往往會需要花費大量的 I/O 讀寫時間，但是透過 mmap 的方式，以 PAGE_SIZE 作為對映的單位，則能有效提高讀寫效率，進而降低傳輸所需要的時間。
 
 
 

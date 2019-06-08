@@ -1,0 +1,1 @@
+cmd_/home/jason/Documents/os/sample_code_4_complete/ksocket/ksocket.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /home/jason/Documents/os/sample_code_4_complete/ksocket/ksocket.ko /home/jason/Documents/os/sample_code_4_complete/ksocket/ksocket.o /home/jason/Documents/os/sample_code_4_complete/ksocket/ksocket.mod.o ;  true

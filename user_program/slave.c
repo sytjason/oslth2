@@ -75,12 +75,12 @@ int main (int argc, char* argv[])
 					break;
 				}
 				posix_fallocate(file_fd, offset, ret);
-				printf("yaya");
+				/*printf("yaya");*/
 				file_address 	= mmap(NULL, ret, PROT_WRITE, MAP_SHARED, file_fd, offset);
-				printf("yaya2");
+				/*printf("yaya2");*/
 				kernel_address 	= mmap(NULL, ret, PROT_READ, MAP_SHARED, dev_fd, 0);
 				memcpy(file_address, kernel_address, ret);
-				printf("yaya3");
+				/*printf("yaya3");*/
 				offset += ret;
 				printf("file_size = %d offset = %d\n", ret, offset);
 			}
