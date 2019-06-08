@@ -115,7 +115,7 @@ sudo ./master [input data] <fcntl | mmap>
 - slave command
 
 ```bash
-sudo ./slave [output data] <fcntl | mmap>
+sudo ./slave [output data] <fcntl | mmap> 127.0.0.1
 ```
 
 **output**
