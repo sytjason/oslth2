@@ -50,6 +50,13 @@
 
     用同樣的方式將 slave device 當中的資料複製到 file_out 檔案當中
 
+- **close**
+
+  - close sockets
+
+  - close file_fd
+
+  - close dev_fd
 
 ## Kernel program
 
@@ -57,8 +64,45 @@
 
   - **master**
 
+    - 初始 debug filesystem
+
+    - 初始 master device
     
+    - 初始 TCP socket
+
+      - address family 設為 AF_INET, 即使用 IPv4 協定
+
+      - 將 master device address kbind 到 socket
+
+      - 監聽 (klisten) 
+
+  - **slave**
+
+    - 初始 debug filesystem
+
+    - 初始 slave device
+
+     
+- **fcntl**
+
+  - **master**
+
+    首先, user program 會用 ioctl 提出 create socket 及 accept connection from slave 的請求，kernel 則會建立一個 client socket 並且得到 slave device address，就可以 connect 並且傳資料了。在 user program 當中，master 會將 file_in 讀取並且 write 到 master device，而後 kernel 就會將 msg ksend 到 client socket。
+
+  - **slave**
+
+    首先將 IP address 從 user space copy 到 kernel，仿照初始 TCP socket 的方式設定 client socket，而後將它 kconnect 到 master device address。在 user program 當中 slave 呼叫 read() 到 slave device，slave device 就會從 client socket krecv msg 並且將 msg 從 kernel space copy 到 user space 的 buffer當中，再把它寫到 file_out 當中。 
     
+- **mmap**
+
+  - **master**
+    
+    user program 可以透過 mmap 的方式將 user space 的 file 映射到 kernel address (master device) 當中，我們一樣再用 TCP 的方式 ksend 到 slave device 當中。
+
+  - **slave**
+
+    同理，slave device 將 krecv 資料存到 slave device ，user program 則再把 slave device address 當中的資料用 mmap 的方式映射到 user space 當中的 file_out 當中。   
+
 
 ## Result
 
